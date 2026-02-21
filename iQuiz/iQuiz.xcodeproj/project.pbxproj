@@ -27,6 +27,7 @@
 		9D4A92D92F45508D003F6507 /* iQuiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iQuiz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D4A92EF2F455098003F6507 /* iQuizTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iQuizTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D4A92F92F455099003F6507 /* iQuizUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iQuizUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9D6AA88D2F4910030076C6E7 /* iQuiz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = iQuiz.xcodeproj; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -88,6 +89,7 @@
 		9D4A92D02F45508D003F6507 = {
 			isa = PBXGroup;
 			children = (
+				9D6AA88D2F4910030076C6E7 /* iQuiz.xcodeproj */,
 				9D4A92DB2F45508D003F6507 /* iQuiz */,
 				9D4A92F22F455098003F6507 /* iQuizTests */,
 				9D4A92FC2F455099003F6507 /* iQuizUITests */,
@@ -102,6 +104,11 @@
 				9D4A92EF2F455098003F6507 /* iQuizTests.xctest */,
 				9D4A92F92F455099003F6507 /* iQuizUITests.xctest */,
 			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9D6AA8E82F494A450076C6E7 /* Products */ = {
+			isa = PBXGroup;
 			name = Products;
 			sourceTree = "<group>";
 		};
@@ -211,6 +218,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D4A92DA2F45508D003F6507 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 9D6AA8E82F494A450076C6E7 /* Products */;
+					ProjectRef = 9D6AA88D2F4910030076C6E7 /* iQuiz.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				9D4A92D82F45508D003F6507 /* iQuiz */,

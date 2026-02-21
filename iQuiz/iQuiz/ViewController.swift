@@ -7,34 +7,15 @@
 
 import UIKit
 
-struct Quiz {
-    let topic: String
-    let description: String
-    let icon: UIImage
-}
+
 
 class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var navBar: UINavigationBar!
     
-    let quizzes = [
-        Quiz(
-            topic: "Mathematics",
-            description: "Test your math skills.",
-            icon: UIImage(systemName: "function")!
-        ),
-        Quiz(
-            topic: "Marvel Super Heroes",
-            description: "How well do you know your Marvel super heroes?",
-            icon: UIImage(systemName: "bolt.fill")!
-        ),
-        Quiz(
-            topic: "Science",
-            description: "Test your science knowledge.",
-            icon: UIImage(systemName: "atom")!
-        )
-    ]
+    let quizData = QuizData()
+    var selectedQuiz: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +25,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return quizzes.count
+        return quizData.quizzes.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,7 +34,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "topicCell", for: indexPath)
-        let quiz = quizzes[indexPath.section]
+        let quiz = quizData.quizzes[indexPath.section]
 
         cell.textLabel?.text = quiz.topic
         cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 18)
@@ -72,27 +53,39 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
-    // row height
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 70
     }
     
-    // section header
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }
     
-    // section header height
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 10
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedQuiz = indexPath.section
+        performSegue(withIdentifier: "showQuestion", sender: self)
+        tableView.deselectRow(at: indexPath, animated: true)
     }
         
     @IBAction func showSettings(_ sender: UIBarButtonItem) {
         let alert = UIAlertController(title: "Settings", message: "Settings go here", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
+    }
+    
+   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showQuestion",
+           let destination = segue.destination as? QuestionViewController,
+           let index = tableView.indexPathForSelectedRow {
+            let selectedQuiz = QuizData().quizzes[index.section]
+            destination.quiz = selectedQuiz
+        }
     }
 }
 
