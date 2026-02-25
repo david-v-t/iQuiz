@@ -83,7 +83,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if segue.identifier == "showQuestion",
            let destination = segue.destination as? QuestionViewController,
            let index = tableView.indexPathForSelectedRow {
-            let selectedQuiz = QuizData().quizzes[index.section]
+            let selectedQuiz = quizData.quizzes[index.section]
             destination.quiz = selectedQuiz
         }
     }

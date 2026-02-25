@@ -7,15 +7,12 @@
 
 import UIKit
 
-class AnswerViewController: UIViewController {
+class AnswerViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var resultLabel: UILabel!
 
-    @IBOutlet weak var answerButton1: UIButton!
-    @IBOutlet weak var answerButton2: UIButton!
-    @IBOutlet weak var answerButton3: UIButton!
-    @IBOutlet weak var answerButton4: UIButton!
+    @IBOutlet weak var tableView: UITableView!
     
     @IBOutlet weak var nextButton: UIButton!
     
@@ -30,6 +27,12 @@ class AnswerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.allowsSelection = false
+        tableView.isScrollEnabled = false
+
         
         navigationItem.hidesBackButton = true
         let backArrow = UIBarButtonItem(
@@ -47,31 +50,58 @@ class AnswerViewController: UIViewController {
         showResult()
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return question.answers.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 10
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "answerCell", for: indexPath)
+        let answerIndex = indexPath.section
+        cell.textLabel?.text = question.answers[answerIndex]
+        
+        cell.layer.borderColor = UIColor.systemGray.cgColor
+        cell.layer.borderWidth = 1
+        cell.layer.cornerRadius = 4
+
+        if answerIndex == question.correctAnswerIndex {
+            cell.backgroundColor = .systemGreen
+        } else if answerIndex == selectedAnswer {
+            cell.backgroundColor = .systemRed
+        }
+
+        return cell
+    }
+    
     func showResult() {
         questionLabel.text = question.text
-        
-        let buttons = [answerButton1, answerButton2, answerButton3, answerButton4]
-        for (index, button) in buttons.enumerated() {
-            if index < question.answers.count {
-                button?.setTitle(question.answers[index], for: .normal)
-                button?.isEnabled = false
-                button?.backgroundColor = .systemGray5
-                button?.setTitleColor(.black, for: .normal)
-            } else {
-                button?.isHidden = true
-            }
-        }
-        
+
         if selectedAnswer == question.correctAnswerIndex {
-            buttons[selectedAnswer]?.backgroundColor = .systemGreen
             resultLabel.text = "Correct!"
+            resultLabel.textColor = .systemGreen
             correctAnswers += 1
         } else {
-            buttons[selectedAnswer]?.backgroundColor = .systemRed
             resultLabel.text = "Incorrect"
+            resultLabel.textColor = .systemRed
         }
-        
-        resultLabel.font = UIFont.boldSystemFont(ofSize: 25)
+
+        resultLabel.font = UIFont.boldSystemFont(ofSize: 24)
+        tableView.reloadData()
     }
     
     @IBAction func nextTapped(_ sender: UIButton) {
@@ -84,8 +114,6 @@ class AnswerViewController: UIViewController {
          }
     }
     
-    
-
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showQuestion" {
             if let nextIndex = sender as? Int,

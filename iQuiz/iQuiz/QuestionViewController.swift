@@ -7,15 +7,9 @@
 
 import UIKit
 
-class QuestionViewController: UIViewController {
-
+class QuestionViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var questionLabel: UILabel!
-    
-    @IBOutlet weak var answerButton1: UIButton!
-    @IBOutlet weak var answerButton2: UIButton!
-    @IBOutlet weak var answerButton3: UIButton!
-    @IBOutlet weak var answerButton4: UIButton!
-    
+    @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var submitButton: UIButton!
     
     var quiz: Quiz!
@@ -30,8 +24,11 @@ class QuestionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.hidesBackButton = true
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.isScrollEnabled = false
         
+        navigationItem.hidesBackButton = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "chevron.backward"),
             style: .plain,
@@ -43,45 +40,60 @@ class QuestionViewController: UIViewController {
         swipeLeft.direction = .left
         view.addGestureRecognizer(swipeLeft)
         
-        showQuestionAndAnswers()
-    }
-    
-    func showQuestionAndAnswers() {
         questionLabel.text = question.text
-        selectedAnswer = nil
-        
-        let buttons = [answerButton1, answerButton2, answerButton3, answerButton4]
-        for (index, button) in buttons.enumerated() {
-            if index < question.answers.count {
-                button?.setTitle(question.answers[index], for: .normal)
-                button?.isHidden = false
-                button?.isEnabled = true
-                button?.tag = index
-            } else {
-                button?.isHidden = true
-            }
-        }
         
         submitButton.isEnabled = false
         submitButton.backgroundColor = .systemGray2
     }
     
-    @IBAction func answerTapped(_ sender: UIButton) {
-        selectedAnswer = sender.tag
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return question.answers.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 10
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let buttons = [answerButton1, answerButton2, answerButton3, answerButton4]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "answerCell", for: indexPath)
+        cell.textLabel?.text = question.answers[indexPath.section]
         
-        for button in buttons {
-            button?.backgroundColor = .systemGray5
-            button?.setTitleColor(.black, for: .normal)
+        cell.layer.borderColor = UIColor.systemGray.cgColor
+        cell.layer.borderWidth = 1
+        cell.layer.cornerRadius = 4
+        
+        
+        return cell
+    }
+    
+    func tableView (_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedAnswer = indexPath.section
+        tableView.reloadData()
+        for cell in tableView.visibleCells {
+            cell.backgroundColor = .white
+            cell.textLabel?.textColor = .black
         }
         
-        sender.backgroundColor = .systemTeal
-        sender.setTitleColor(.white, for: .normal)
-
+        let cell = tableView.cellForRow(at: indexPath)
+        cell?.backgroundColor = .systemTeal
+        cell?.textLabel?.textColor = .white
+    
         submitButton.isEnabled = true
         submitButton.backgroundColor = .systemBlue
     }
+    
     
     @IBAction func submitTapped(_ sender: UIButton) {
         performSegue(withIdentifier:"showAnswers", sender: self)
