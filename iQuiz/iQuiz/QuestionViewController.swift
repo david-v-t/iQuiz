@@ -74,7 +74,6 @@ class QuestionViewController: UIViewController, UITableViewDelegate, UITableView
         cell.layer.borderWidth = 1
         cell.layer.cornerRadius = 4
         
-        
         return cell
     }
     
